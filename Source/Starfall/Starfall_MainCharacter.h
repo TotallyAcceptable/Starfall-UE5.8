@@ -5,8 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Starfall_Interactable_Interface.h"
+#include "Starfall_PlayerController.h"
+#include "S_InputDataConfig.h"
 #include "Starfall_MainCharacter.generated.h"
 
+class UInputMappingContext;
+class US_InputDataConfig;
 
 UCLASS()
 class STARFALL_API AStarfall_MainCharacter : public ACharacter, public IStarfall_Interactable_Interface
@@ -20,6 +24,23 @@ public:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Planet")
 	AActor* Planet; // Reference to the planet actor the player is on
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Direction")
+	FVector downDirection;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EnhancedInput")
+	UInputMappingContext* InputMapping;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EnhancedInput")
+	US_InputDataConfig* InputActions;
+	
+	UFUNCTION()
+	void Move(const FInputActionValue& Value);
+	
+	UFUNCTION()
+	void Look(const FInputActionValue& Value);
+
+private:
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,8 +51,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
 	// Implementation of the interface function to get the planet actor
 	virtual AActor* GetPlanet_Implementation() override;
+	
 };
